@@ -49,8 +49,6 @@
     "sinon": "^9.0.0",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
-    "typedoc": "^0.16.11",
-    "typedoc-plugin-markdown": "^2.2.17",
     "typescript": "^3.8.3",
     "typings": "^2.1.1"
   },
@@ -105,16 +103,18 @@
     "url": "git+https://github.com/assertedio/mocha-ldjson.git"
   },
   "scripts": {
+    "beta": "npm version prerelease && npm publish",
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json && sed -i 's/\"files\":/\"_files\":/' dist/package.json",
     "commit": "git-cz",
-    "docs": "typedoc --plugin typedoc-plugin-markdown --readme none --exclude \"tests/**/*.+(unit|it).+(ts|js)\"",
     "example": "npm run build && mocha tests/resources/examples/simple.js --reporter dist/src/index.js",
-    "integration": "nyc mocha --recursive -r source-map-support/register -r ts-node/register -r tsconfig-paths/register --use_strict --exit \"tests/**/*.it.+(ts|js)\"",
     "lint": "fixpack && prettier-eslint --write && eslint --fix \"**/*.{js,ts}\"",
+    "major": "npm version major && npm publish",
+    "minor": "npm version minor && npm publish",
+    "patch": "npm version patch && npm publish",
     "postpublish": "git push",
     "prepare": "fixpack",
     "prepublishOnly": "npm run build",
-    "test": "nyc mocha --recursive -r source-map-support/register -r ts-node/register -r tsconfig-paths/register --use_strict --exit \"tests/**/*.+(unit|it).+(ts|js)\"",
-    "unit": "nyc mocha --recursive -r source-map-support/register -r ts-node/register -r tsconfig-paths/register --use_strict --exit \"tests/**/*.unit.+(ts|js)\""
+    "preversion": "npm run lint",
+    "test": "echo 'no tests yet' && exit 1"
   }
 }
