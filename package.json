@@ -78,7 +78,7 @@
       "eslint --fix"
     ]
   },
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
     "all": true,
