@@ -1,0 +1,120 @@
+{
+  "name": "mocha-ldjson",
+  "description": "Mocha reporter that streams to ldjson file",
+  "version": "1.0.1-2",
+  "author": "Eric Hacke",
+  "bugs": {
+    "url": "https://github.com/assertedio/mocha-ldjson/issues"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "boolean": "^3.0.1",
+    "debug": "^4.1.1",
+    "err": "^2.1.11",
+    "fs-extra": "^8.1.0",
+    "lodash": "^4.17.15",
+    "luxon": "^1.22.0",
+    "mocha": "^7.1.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@ehacke/commitlint-config": "^1.0.2",
+    "@ehacke/eslint-config": "^1.0.0",
+    "@ehacke/prettier-config": "^1.0.1",
+    "@google-cloud/functions-framework": "^1.5.0",
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@types/fs-extra": "^8.1.0",
+    "@types/luxon": "^1.21.0",
+    "@types/mocha": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.22.0",
+    "@typescript-eslint/parser": "^2.22.0",
+    "chai": "^4.2.0",
+    "commitizen": "^4.0.3",
+    "commitlint": "^8.3.5",
+    "cz-conventional-changelog": "^3.1.0",
+    "eslint": "^6.8.0",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-simple-import-sort": "^5.0.0",
+    "fixpack": "^3.0.6",
+    "husky": "^4.0.10",
+    "lint-staged": "^10.0.8",
+    "nyc": "^15.0.0",
+    "prettier": "^1.18.2",
+    "prettier-eslint-cli": "^5.0.0",
+    "sinon": "^9.0.0",
+    "ts-node": "^8.6.2",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^3.8.3",
+    "typings": "^2.1.1"
+  },
+  "files": [
+    "dist/**/*.{js,ts,tsbuildinfo}",
+    "docs/**/*.*"
+  ],
+  "homepage": "https://github.com/assertedio/mocha-ldjson#readme",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "keywords": [
+    "ldjson",
+    "mocha",
+    "reporter"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "package.json": [
+      "fixpack"
+    ],
+    "*.{js,ts}": [
+      "prettier-eslint --write",
+      "eslint --fix"
+    ]
+  },
+  "main": "dist/src/index.js",
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "all": true,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "src/scratch.*"
+    ],
+    "reporter": [
+      "html",
+      "text",
+      "text-summary",
+      "lcov"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/assertedio/mocha-ldjson.git"
+  },
+  "scripts": {
+    "beta": "npm version prerelease && npm publish",
+    "build": "rm -rf ./dist && tsc -p tsconfig.build.json && sed -i 's/\"files\":/\"_files\":/' dist/package.json",
+    "commit": "git-cz",
+    "example": "npm run build && mocha tests/resources/examples/simple.js --reporter dist/src/index.js",
+    "lint": "fixpack && prettier-eslint --write && eslint --fix \"**/*.{js,ts}\"",
+    "major": "npm version major && npm publish",
+    "minor": "npm version minor && npm publish",
+    "patch": "npm version patch && npm publish",
+    "postpublish": "git push",
+    "prepare": "fixpack",
+    "prepublishOnly": "npm run build",
+    "preversion": "npm run lint",
+    "test": "echo 'no tests yet' && exit 1"
+  }
+}
