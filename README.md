@@ -23,14 +23,14 @@ And it will output the LDJSON to the current working directory inside `reports/r
 Should look like:
 
 ```
-{"type":"start","event":{"total":1,"stats":{"suites":0,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.622Z","timeMs":15}
-{"type":"suite","event":{"title":"","fullTitle":"","root":true,"stats":{"suites":0,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.622Z","timeMs":15}
-{"type":"suite","event":{"title":"suite 1","fullTitle":"suite 1","root":false,"stats":{"suites":1,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.623Z","timeMs":16}
-{"type":"test","event":{"title":"test timeout","fullTitle":"suite 1 test timeout","result":"unknown","err":null,"stats":{"suites":1,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.623Z","timeMs":16}
-{"type":"fail","event":{"title":"test timeout","fullTitle":"suite 1 test timeout","duration":50,"result":"failed","err":{"stack":"Error: Timeout of 50ms exceeded. For async tests and hooks, ensure \"done()\" is called; if returning a Promise, ensure it resolves. (/home/ehacke/workspace/assertedio/mocha-ldjson/tests/resources/examples/timeout.js)\n    at listOnTimeout (internal/timers.js:549:17)\n    at processTimers (internal/timers.js:492:7)","message":"Timeout of 50ms exceeded. For async tests and hooks, ensure \"done()\" is called; if returning a Promise, ensure it resolves. (/home/ehacke/workspace/assertedio/mocha-ldjson/tests/resources/examples/timeout.js)"},"stats":{"suites":1,"tests":0,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.676Z","timeMs":69}
-{"type":"suite end","event":{"title":"suite 1","fullTitle":"suite 1","root":false,"stats":{"suites":1,"tests":1,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.677Z","timeMs":70}
-{"type":"suite end","event":{"title":"","fullTitle":"","root":true,"stats":{"suites":1,"tests":1,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.677Z","timeMs":70}
-{"type":"end","event":{"stats":{"suites":1,"tests":1,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z","end":"2020-03-15T22:21:45.677Z","duration":70}},"timestamp":"2020-03-15T22:21:45.677Z","timeMs":70}
+{"type":"start","data":{"total":1,"stats":{"suites":0,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.622Z","timeMs":15}
+{"type":"suite","data":{"title":"","fullTitle":"","root":true,"stats":{"suites":0,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.622Z","timeMs":15}
+{"type":"suite","data":{"title":"suite 1","fullTitle":"suite 1","root":false,"stats":{"suites":1,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.623Z","timeMs":16}
+{"type":"test","data":{"title":"test timeout","fullTitle":"suite 1 test timeout","result":"unknown","err":null,"stats":{"suites":1,"tests":0,"passes":0,"pending":0,"failures":0,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.623Z","timeMs":16}
+{"type":"fail","data":{"title":"test timeout","fullTitle":"suite 1 test timeout","duration":50,"result":"failed","err":{"stack":"Error: Timeout of 50ms exceeded. For async tests and hooks, ensure \"done()\" is called; if returning a Promise, ensure it resolves. (/home/ehacke/workspace/assertedio/mocha-ldjson/tests/resources/examples/timeout.js)\n    at listOnTimeout (internal/timers.js:549:17)\n    at processTimers (internal/timers.js:492:7)","message":"Timeout of 50ms exceeded. For async tests and hooks, ensure \"done()\" is called; if returning a Promise, ensure it resolves. (/home/ehacke/workspace/assertedio/mocha-ldjson/tests/resources/examples/timeout.js)"},"stats":{"suites":1,"tests":0,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.676Z","timeMs":69}
+{"type":"suite end","data":{"title":"suite 1","fullTitle":"suite 1","root":false,"stats":{"suites":1,"tests":1,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.677Z","timeMs":70}
+{"type":"suite end","data":{"title":"","fullTitle":"","root":true,"stats":{"suites":1,"tests":1,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z"}},"timestamp":"2020-03-15T22:21:45.677Z","timeMs":70}
+{"type":"end","data":{"stats":{"suites":1,"tests":1,"passes":0,"pending":0,"failures":1,"start":"2020-03-15T22:21:45.607Z","end":"2020-03-15T22:21:45.677Z","duration":70}},"timestamp":"2020-03-15T22:21:45.677Z","timeMs":70}
 ```
 
 Different events have different details, but all follow the format:
@@ -38,7 +38,7 @@ Different events have different details, but all follow the format:
 ```json5
 {
   "type": "start|suite|test|pass|fail|suite end|end",
-  "event": {
+  "data": {
     "stats": {
       "suites": 0,
       "tests": 0,
@@ -85,7 +85,7 @@ All event types map directly to the `RunnerConstants` defined in the Mocha libra
 ```json5
 {
   "type": "start",
-  "event": {
+  "data": {
     "total": 1,
     "stats": {
       "suites": 0,
@@ -106,7 +106,7 @@ All event types map directly to the `RunnerConstants` defined in the Mocha libra
 ```json5
 {
   "type": "suite",
-  "event": {
+  "data": {
     "title": "",
     "fullTitle": "",
     "root": true,  // Indicates a root test suite
@@ -129,7 +129,7 @@ All event types map directly to the `RunnerConstants` defined in the Mocha libra
 ```json5
 {
   "type": "test",
-  "event": {
+  "data": {
     "title": "test timeout",
     "fullTitle": "suite 1 test timeout",
     "result": "unknown", // Usually indicates a start
@@ -153,7 +153,7 @@ All event types map directly to the `RunnerConstants` defined in the Mocha libra
 ```json5
 {
   "type": "pass",
-  "event": {
+  "data": {
     "title": "test pass",
     "fullTitle": "suite 1 test pass",
     "duration": 0,
@@ -178,7 +178,7 @@ All event types map directly to the `RunnerConstants` defined in the Mocha libra
 ```json5
 {
   "type": "fail",
-  "event": {
+  "data": {
     "title": "test fail",
     "fullTitle": "suite 1 test fail",
     "duration": 11,
@@ -210,7 +210,7 @@ All event types map directly to the `RunnerConstants` defined in the Mocha libra
 ```json5
 {
   "type": "suite end",
-  "event": {
+  "data": {
     "title": "",
     "fullTitle": "",
     "root": true,
@@ -233,7 +233,7 @@ All event types map directly to the `RunnerConstants` defined in the Mocha libra
 ```json5
 {
   "type": "end",
-  "event": {
+  "data": {
     "stats": {
       "suites": 4,
       "tests": 7,

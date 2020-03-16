@@ -8,6 +8,7 @@ import Mocha from 'mocha';
 import path from 'path';
 
 import { name } from '../package.json';
+import { TestDataInterface } from './testEvent';
 
 import Base = Mocha.reporters.Base;
 import Runner = Mocha.Runner;
@@ -90,7 +91,7 @@ class Ldjson extends Base {
       this.writeEvent(EVENT_RUN_BEGIN, { total, stats: this.stats });
     });
 
-    const processSuite = (suite: Suite) => {
+    const processSuite = (suite: Suite): TestDataInterface => {
       return { title: suite.title, fullTitle: suite.fullTitle(), root: suite.root, stats: this.stats };
     };
 
@@ -118,7 +119,7 @@ class Ldjson extends Base {
       return 'unknown';
     };
 
-    const processTest = (test: Test, err) => {
+    const processTest = (test: Test, err): TestDataInterface => {
       const error = err || test.err;
 
       return {
@@ -145,23 +146,23 @@ class Ldjson extends Base {
   /**
    * Append event to output path
    * @param {string} type
-   * @param {{}} event
+   * @param {{}} data
    * @param {Date} [timestamp]
    * @returns {Promise<void>}
    */
-  writeEvent(type: string, event, timestamp = DateTime.utc().toJSDate()): void {
+  writeEvent(type: string, data: TestDataInterface, timestamp = DateTime.utc().toJSDate()): void {
     this.startTime = this.startTime || timestamp.valueOf();
     const timeMs = timestamp.valueOf() - (this.startTime as number);
 
-    if (event?.err?.code === CONSTANTS.TIMEOUT_CODE) {
-      event.title = `Routine timeout, exceeded: ${this.overallTimeoutMs} ms`;
-      event.fullTitle = event.title;
-      event.err.stack = null;
+    if (data?.err?.code === CONSTANTS.TIMEOUT_CODE) {
+      data.title = `Routine timeout, exceeded: ${this.overallTimeoutMs} ms`;
+      data.fullTitle = data.title;
+      data.err.stack = null;
     }
 
-    fs.appendFileSync(this.outputPath, `${JSON.stringify({ type, event, timestamp, timeMs })}\n`, { encoding: 'utf8' });
+    fs.appendFileSync(this.outputPath, `${JSON.stringify({ type, data, timestamp, timeMs })}\n`, { encoding: 'utf8' });
 
-    if (event?.err?.code === CONSTANTS.TIMEOUT_CODE) {
+    if (data?.err?.code === CONSTANTS.TIMEOUT_CODE) {
       throw new Err('Routine timed out', CONSTANTS.TIMEOUT_CODE);
     }
   }
