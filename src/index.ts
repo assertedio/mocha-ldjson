@@ -83,8 +83,9 @@ class Ldjson extends Base {
    * @returns {void}
    */
   prepareRunner(runner: Runner): void {
+    const { total } = runner;
+
     runner.once(EVENT_RUN_BEGIN, () => {
-      const { total } = runner;
       this.startTime = DateTime.utc()
         .toJSDate()
         .valueOf();
@@ -92,7 +93,7 @@ class Ldjson extends Base {
     });
 
     const processSuite = (suite: Suite): TestDataInterface => {
-      return { title: suite.title, fullTitle: suite.fullTitle(), root: suite.root, stats: this.stats };
+      return { total, title: suite.title, fullTitle: suite.fullTitle(), root: suite.root, stats: this.stats };
     };
 
     runner.on(EVENT_SUITE_BEGIN, (suite: Suite) => this.writeEvent(EVENT_SUITE_BEGIN, processSuite(suite)));
@@ -123,6 +124,7 @@ class Ldjson extends Base {
       const error = err || test.err;
 
       return {
+        total,
         title: test.title,
         fullTitle: test.fullTitle(),
         duration: test.duration,
@@ -136,7 +138,7 @@ class Ldjson extends Base {
     runner.on(EVENT_TEST_PASS, (test: Test, err) => this.writeEvent(EVENT_TEST_PASS, processTest(test, err)));
     runner.on(EVENT_TEST_FAIL, (test: Test, err) => this.writeEvent(EVENT_TEST_FAIL, processTest(test, err)));
     runner.once(EVENT_RUN_END, () => {
-      this.writeEvent(EVENT_RUN_END, { stats: this.stats });
+      this.writeEvent(EVENT_RUN_END, { total, stats: this.stats });
       if (this.overallTimeout) {
         clearTimeout(this.overallTimeout);
       }

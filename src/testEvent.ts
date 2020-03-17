@@ -1,5 +1,5 @@
 export interface TestDataInterface {
-  total?: number;
+  total: number;
   title?: string;
   fullTitle?: string;
   duration?: number;
