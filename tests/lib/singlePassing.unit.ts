@@ -82,6 +82,7 @@ describe('ldjson reporter - single passing test', () => {
         pending: 0,
         failures: 0,
         start: 'date',
+        end: 'date',
       },
     });
   });

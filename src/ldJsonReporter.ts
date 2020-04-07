@@ -1,3 +1,4 @@
+import { TEST_EVENT_TYPES, TEST_RESULT_STATUS, TestData, TestDataInterface, TestEvent, TestStatsInterface } from '@asserted/models';
 import { boolean } from 'boolean';
 import cuid from 'cuid';
 import debug from 'debug';
@@ -10,7 +11,6 @@ import path from 'path';
 import stripAnsi from 'strip-ansi';
 
 import { name } from '../package.json';
-import { TestDataInterface, TestStatsInterface } from './testEvent';
 import { getStats, processError } from './utils';
 
 import Base = Mocha.reporters.Base;
@@ -31,7 +31,7 @@ const {
   EVENT_TEST_PENDING,
   EVENT_SUITE_BEGIN,
   EVENT_SUITE_END,
-} = Runner.constants;
+} = TEST_EVENT_TYPES;
 
 const CONSTANTS = {
   DEFAULT_DIR: 'reports/',
@@ -101,36 +101,46 @@ export class LdJsonReporter extends Base {
   }
 
   /**
+   * Get test result
+   * @param {any} test
+   * @returns {TEST_RESULT_STATUS | null}
+   */
+  static getTestResult(test: any = {}): TEST_RESULT_STATUS | null {
+    if (test.state === TEST_RESULT_STATUS.PASSED) {
+      return TEST_RESULT_STATUS.PASSED;
+    }
+
+    if (test.state === TEST_RESULT_STATUS.FAILED) {
+      return TEST_RESULT_STATUS.FAILED;
+    }
+
+    if (test.pending) {
+      return TEST_RESULT_STATUS.PENDING;
+    }
+    return null;
+  }
+
+  /**
    * Process event into test data object
    * @param {Test | Hook | Suite} eventObject
    * @param {{}} err
    * @returns {TestDataInterface}
    */
   static processEvent(eventObject: any = {} as any, err = null): TestDataInterface {
-    const getTestResult = (_test: any): string | null => {
-      if (_test.state) {
-        return _test.state;
-      }
-      if (_test.pending) {
-        return 'pending';
-      }
-      return null;
-    };
-
     const error = err || eventObject.err;
 
-    return {
+    return new TestData({
       id: (eventObject as any).id || null,
       file: eventObject.file || null,
       title: eventObject.title ? stripAnsi(eventObject.title) : null,
       fullTitlePath: isFunction(eventObject.titlePath) ? eventObject.titlePath().map((title) => stripAnsi(title)) : [],
       fullTitle: isFunction(eventObject.titlePath) ? stripAnsi(eventObject.titlePath().join(' -> ')) : null,
       duration: isNumber(eventObject.duration) ? (eventObject.duration as number) : null,
-      result: getTestResult(eventObject),
+      result: LdJsonReporter.getTestResult(eventObject),
       error: error ? processError(error) : null,
       root: eventObject.root || false,
       timedOut: eventObject.timedOut || false,
-    };
+    });
   }
 
   /**
@@ -188,7 +198,7 @@ export class LdJsonReporter extends Base {
    * @param {Date} [timestamp]
    * @returns {Promise<void>}
    */
-  writeEvent(type: string, data: TestDataInterface, stats: TestStatsInterface, timestamp = DateTime.utc().toJSDate()): void {
+  writeEvent(type: TEST_EVENT_TYPES, data: TestDataInterface, stats: TestStatsInterface, timestamp = DateTime.utc().toJSDate()): void {
     this.startTime = this.startTime || timestamp.valueOf();
     const elapsedMs = timestamp.valueOf() - (this.startTime as number);
 
@@ -198,7 +208,7 @@ export class LdJsonReporter extends Base {
       data.error.stack = null;
     }
 
-    LdJsonReporter.appendToFile(this.outputPath, { type, data, timestamp, elapsedMs, stats });
+    LdJsonReporter.appendToFile(this.outputPath, new TestEvent({ type, data, timestamp, elapsedMs, stats }));
 
     if (data?.error?.code === CONSTANTS.TIMEOUT_CODE) {
       throw new Err('Routine timed out', CONSTANTS.TIMEOUT_CODE);
