@@ -18,7 +18,15 @@ import Test = Mocha.Test;
 
 const log = debug(name);
 
-const { EVENT_TEST_BEGIN, EVENT_RUN_BEGIN, EVENT_TEST_PASS, EVENT_TEST_FAIL, EVENT_RUN_END, EVENT_SUITE_BEGIN, EVENT_SUITE_END } = Runner.constants;
+const {
+  EVENT_RUN_BEGIN,
+  EVENT_RUN_END,
+  EVENT_TEST_BEGIN,
+  EVENT_TEST_PASS,
+  EVENT_TEST_FAIL,
+  EVENT_SUITE_BEGIN,
+  EVENT_SUITE_END
+} = Runner.constants;
 
 const CONSTANTS = {
   DEFAULT_DIR: 'reports/',
@@ -86,9 +94,7 @@ class Ldjson extends Base {
     const { total } = runner;
 
     runner.once(EVENT_RUN_BEGIN, () => {
-      this.startTime = DateTime.utc()
-        .toJSDate()
-        .valueOf();
+      this.startTime = DateTime.utc().toJSDate().valueOf();
       this.writeEvent(EVENT_RUN_BEGIN, { total, stats: this.stats });
     });
 
