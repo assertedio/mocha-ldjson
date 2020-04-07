@@ -173,16 +173,16 @@ class Ldjson extends Base {
 /**
  * Trap the timeout, and exit
  */
-process.on('uncaughtException', (error) => {
-  if ((error as any)?.code === CONSTANTS.TIMEOUT_CODE) {
-    console.error('Routine timed out');
-    // eslint-disable-next-line no-process-exit
-    return process.exit(1);
-  }
-
-  console.error('Uncaught exception:', error.stack);
-  // eslint-disable-next-line no-process-exit
-  return process.exit(1);
-});
+// process.on('uncaughtException', (error) => {
+//   if ((error as any)?.code === CONSTANTS.TIMEOUT_CODE) {
+//     console.error('Routine timed out');
+//     // eslint-disable-next-line no-process-exit
+//     return process.exit(1);
+//   }
+//
+//   console.error('Uncaught exception:', error.stack);
+//   // eslint-disable-next-line no-process-exit
+//   return process.exit(1);
+// });
 
 module.exports = Ldjson;
