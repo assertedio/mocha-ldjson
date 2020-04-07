@@ -1,33 +1,38 @@
+export interface TestErrorInterface {
+  stack?: string | null;
+  message?: string;
+  diff?: string;
+  code?: string | number;
+}
+
+export interface TestStatsInterface {
+  suites: number;
+  tests: number;
+  passes: number;
+  pending: number;
+  failures: number;
+  start?: Date;
+  end?: Date;
+  duration: number | null;
+}
+
 export interface TestDataInterface {
-  total: number;
-  title?: string;
-  fullTitle?: string;
-  duration?: number;
-  result?: string;
-  root?: boolean;
-  err?: {
-    stack?: string | null;
-    message?: string;
-    code?: string;
-    actual?: any;
-    expected?: any;
-    operator?: string;
-  } | null;
-  stats: {
-    suites: number;
-    tests: number;
-    passes: number;
-    pending: number;
-    failures: number;
-    start?: Date;
-    end?: Date;
-    duration?: number;
-  };
+  id: string | null;
+  title: string | null;
+  fullTitle: string | null;
+  fullTitlePath: string[];
+  duration: number | null;
+  result: string | null;
+  root: boolean;
+  file: string | null;
+  error: TestErrorInterface | null;
+  timedOut: boolean;
 }
 
 export interface TestEventInterface {
   type: string;
-  data?: TestDataInterface;
+  data: TestDataInterface;
+  stats: TestStatsInterface;
   timestamp: Date;
-  timeMs: number;
+  elapsedMs: number;
 }
