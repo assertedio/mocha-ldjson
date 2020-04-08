@@ -116,7 +116,7 @@
     "beta": "npm version prerelease && npm publish",
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json && sed -i 's/\"files\":/\"_files\":/' dist/package.json",
     "commit": "git-cz",
-    "example": "npm run build && mocha tests/resources/examples/simple.js --reporter dist/src/index.js",
+    "example": "npm run build && mocha tests/resources/examples/simple.js --bail=false --reporter dist/src/index.js; echo \"Done\"",
     "lint": "fixpack && prettier-eslint --write && eslint --fix \"**/*.{js,ts}\"",
     "major": "npm version major && npm publish",
     "minor": "npm version minor && npm publish",

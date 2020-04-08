@@ -38,12 +38,15 @@ const CONSTANTS = {
   DEFAULT_FILENAME: 'report.ldjson',
   ALLOWED_ERR_PROPS: ['stack', 'message', 'code', 'actual', 'expected', 'operator'],
   TIMEOUT_CODE: 'RUN_TIMEOUT',
+  TIMEOUT_EXIT_CODE: 30,
 };
 
 /**
  * @class
  */
 export class LdJsonReporter extends Base {
+  static CONSTANTS = CONSTANTS;
+
   private readonly outputPath: string;
 
   private startTime: number | null = null;
@@ -61,8 +64,12 @@ export class LdJsonReporter extends Base {
 
     const DEFAULT_PATH = path.join(CONSTANTS.DEFAULT_DIR, CONSTANTS.DEFAULT_FILENAME);
 
-    const { outputPath, append, overallTimeoutMs }: { outputPath: string; append: boolean; overallTimeoutMs: string } =
-      options?.reporterOptions || {};
+    const {
+      outputPath,
+      append,
+      overallTimeoutMs,
+      trapAndExit,
+    }: { outputPath: string; append: boolean; overallTimeoutMs: string; trapAndExit: boolean } = options?.reporterOptions || {};
 
     if (overallTimeoutMs) {
       this.overallTimeoutMs = parseInt(overallTimeoutMs, 10);
@@ -79,8 +86,30 @@ export class LdJsonReporter extends Base {
       this.outputPath = path.join(this.outputPath, CONSTANTS.DEFAULT_FILENAME);
     }
 
+    if (trapAndExit) {
+      LdJsonReporter.trapExceptionsAndExit();
+    }
+
     LdJsonReporter.prepareFile(this.outputPath, append);
     this.prepareRunner(runner);
+  }
+
+  /**
+   * Trap uncaught exceptions and rejectsions
+   * @returns {void}
+   */
+  static trapExceptionsAndExit(): void {
+    process.on('uncaughtException', (error) => {
+      if ((error as any)?.code === CONSTANTS.TIMEOUT_CODE) {
+        console.error('Routine timed out');
+        // eslint-disable-next-line no-process-exit
+        return process.exit(CONSTANTS.TIMEOUT_EXIT_CODE);
+      }
+
+      console.error('Uncaught exception:', error.stack);
+      // eslint-disable-next-line no-process-exit
+      return process.exit(1);
+    });
   }
 
   /**
@@ -215,18 +244,3 @@ export class LdJsonReporter extends Base {
     }
   }
 }
-
-/**
- * Trap the timeout, and exit
- */
-// process.on('uncaughtException', (error) => {
-//   if ((error as any)?.code === CONSTANTS.TIMEOUT_CODE) {
-//     console.error('Routine timed out');
-//     // eslint-disable-next-line no-process-exit
-//     return process.exit(1);
-//   }
-//
-//   console.error('Uncaught exception:', error.stack);
-//   // eslint-disable-next-line no-process-exit
-//   return process.exit(1);
-// });
