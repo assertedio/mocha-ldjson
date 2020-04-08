@@ -1,7 +1,7 @@
 {
   "name": "mocha-ldjson",
   "description": "Mocha reporter that streams to ldjson file",
-  "version": "1.0.2-3",
+  "version": "1.0.2-4",
   "author": "Eric Hacke",
   "bugs": {
     "url": "https://github.com/assertedio/mocha-ldjson/issues"
@@ -89,7 +89,6 @@
     ]
   },
   "main": "dist/src/index.js",
-  "types": "dist/src/index.d.js",
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
     "all": true,
@@ -128,5 +127,6 @@
     "preversion": "npm run lint && npm run test",
     "test": "nyc mocha --recursive -r source-map-support/register -r ts-node/register -r tsconfig-paths/register --use_strict --exit \"tests/**/*.+(unit|it).+(ts|js)\"",
     "unit": "nyc mocha --recursive -r source-map-support/register -r ts-node/register -r tsconfig-paths/register --use_strict --exit \"tests/**/*.unit.+(ts|js)\""
-  }
+  },
+  "types": "dist/src/index.d.js"
 }
