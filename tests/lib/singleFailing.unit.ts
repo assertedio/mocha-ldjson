@@ -53,7 +53,7 @@ describe('ldjson reporter - single failing test', () => {
   });
 
   it('test failure', () => {
-    const [failedEvent] = loggedData.filter(({ type }) => type === 'fail');
+    const [failedEvent] = loggedData.filter(({ data: { type } }) => type === 'fail');
 
     expect(failedEvent.data.result).to.eql('failed');
     expect(failedEvent.data.error.diff).to.eql('- true\n+ false\n');

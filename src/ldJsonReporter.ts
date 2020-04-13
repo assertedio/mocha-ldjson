@@ -147,15 +147,17 @@ export class LdJsonReporter extends Base {
 
   /**
    * Process event into test data object
+   * @param {TEST_EVENT_TYPES} type
    * @param {Test | Hook | Suite} eventObject
    * @param {{}} err
    * @returns {TestDataInterface}
    */
-  static processEvent(eventObject: any = {} as any, err = null): TestDataInterface {
+  static processEvent(type: TEST_EVENT_TYPES, eventObject: any = {} as any, err = null): TestDataInterface {
     const error = err || eventObject.err;
 
     return new TestData({
       id: (eventObject as any).id || null,
+      type,
       file: eventObject.file || null,
       title: eventObject.title ? stripAnsi(eventObject.title) : null,
       fullTitlePath: isFunction(eventObject.titlePath) ? eventObject.titlePath().map((title) => stripAnsi(title)) : [],
@@ -176,29 +178,29 @@ export class LdJsonReporter extends Base {
   prepareRunner(runner: Runner): void {
     runner.once(EVENT_RUN_BEGIN, () => {
       this.startTime = DateTime.utc().toJSDate().valueOf();
-      this.writeEvent(EVENT_RUN_BEGIN, LdJsonReporter.processEvent(), getStats(this.stats));
+      this.writeEvent(LdJsonReporter.processEvent(EVENT_RUN_BEGIN), getStats(this.stats));
     });
 
     [EVENT_HOOK_BEGIN, EVENT_TEST_BEGIN].forEach((eventType) =>
       runner.on(eventType, (eventObject, err = null) => {
         (eventObject as any).id = cuid();
-        this.writeEvent(eventType, LdJsonReporter.processEvent(eventObject, err), getStats(this.stats));
+        this.writeEvent(LdJsonReporter.processEvent(eventType, eventObject, err), getStats(this.stats));
       })
     );
     runner.on(EVENT_SUITE_BEGIN, (suite: Suite) => {
       (suite as any).id = cuid();
-      this.writeEvent(EVENT_SUITE_BEGIN, LdJsonReporter.processEvent(suite), getStats(this.stats));
+      this.writeEvent(LdJsonReporter.processEvent(EVENT_SUITE_BEGIN, suite), getStats(this.stats));
     });
 
     [EVENT_HOOK_END, EVENT_TEST_PASS, EVENT_TEST_FAIL, EVENT_TEST_PENDING].forEach((eventType) =>
       runner.on(eventType, (eventObject: any, err = null) =>
-        this.writeEvent(eventType, LdJsonReporter.processEvent(eventObject, err), getStats(this.stats))
+        this.writeEvent(LdJsonReporter.processEvent(eventType, eventObject, err), getStats(this.stats))
       )
     );
-    runner.on(EVENT_SUITE_END, (suite: Suite) => this.writeEvent(EVENT_SUITE_END, LdJsonReporter.processEvent(suite), getStats(this.stats)));
+    runner.on(EVENT_SUITE_END, (suite: Suite) => this.writeEvent(LdJsonReporter.processEvent(EVENT_SUITE_END, suite), getStats(this.stats)));
 
     runner.once(EVENT_RUN_END, () => {
-      this.writeEvent(EVENT_RUN_END, LdJsonReporter.processEvent(), getStats(this.stats));
+      this.writeEvent(LdJsonReporter.processEvent(EVENT_RUN_END), getStats(this.stats));
       if (this.overallTimeout) {
         clearTimeout(this.overallTimeout);
       }
@@ -217,13 +219,12 @@ export class LdJsonReporter extends Base {
 
   /**
    * Append event to output path
-   * @param {string} type
    * @param {{}} data
    * @param {TestStatsInterface} stats
    * @param {Date} [timestamp]
    * @returns {Promise<void>}
    */
-  writeEvent(type: TEST_EVENT_TYPES, data: TestDataInterface, stats: TestStatsInterface, timestamp = DateTime.utc().toJSDate()): void {
+  writeEvent(data: TestDataInterface, stats: TestStatsInterface, timestamp = DateTime.utc().toJSDate()): void {
     this.startTime = this.startTime || timestamp.valueOf();
     const elapsedMs = timestamp.valueOf() - (this.startTime as number);
 
@@ -233,7 +234,7 @@ export class LdJsonReporter extends Base {
       data.error.stack = null;
     }
 
-    LdJsonReporter.appendToFile(this.outputPath, new TestEvent({ type, data, timestamp, elapsedMs, stats }));
+    LdJsonReporter.appendToFile(this.outputPath, new TestEvent({ data, timestamp, elapsedMs, stats }));
 
     if (data?.error?.code === CONSTANTS.TIMEOUT_CODE) {
       throw new Err('Routine timed out', CONSTANTS.TIMEOUT_CODE);

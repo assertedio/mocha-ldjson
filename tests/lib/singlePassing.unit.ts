@@ -55,14 +55,14 @@ describe('ldjson reporter - single passing test', () => {
   it('start event', () => {
     const event = first(loggedData) as any;
 
-    expect(event.type).to.eql('start');
+    expect(event.data.type).to.eql('start');
 
     expect(isInteger(event.elapsedMs)).to.eql(true);
     expect(isInteger(event.stats.duration)).to.eql(false);
 
     expect(omit(event, ['elapsedMs', 'stats.duration'])).to.eql({
-      type: 'start',
       data: {
+        type: 'start',
         duration: null,
         error: null,
         file: null,
@@ -89,13 +89,13 @@ describe('ldjson reporter - single passing test', () => {
 
   it('root suite start', () => {
     const event = loggedData[1] as any;
-    expect(event.type).to.eql('suite');
+    expect(event.data.type).to.eql('suite');
     expect(event.data.root).to.eql(true);
   });
 
   it('base suite start', () => {
     const event = loggedData[2] as any;
-    expect(event.type).to.eql('suite');
+    expect(event.data.type).to.eql('suite');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('passing suite');
@@ -105,7 +105,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('before all', () => {
     const event = loggedData[3] as any;
-    expect(event.type).to.eql('hook');
+    expect(event.data.type).to.eql('hook');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"before all" hook');
@@ -115,7 +115,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('before all end', () => {
     const event = loggedData[4] as any;
-    expect(event.type).to.eql('hook end');
+    expect(event.data.type).to.eql('hook end');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"before all" hook');
@@ -125,7 +125,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('test start', () => {
     const event = loggedData[5] as any;
-    expect(event.type).to.eql('test');
+    expect(event.data.type).to.eql('test');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('passing test');
@@ -136,7 +136,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('before each', () => {
     const event = loggedData[6] as any;
-    expect(event.type).to.eql('hook');
+    expect(event.data.type).to.eql('hook');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"before each" hook');
@@ -146,7 +146,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('before each end', () => {
     const event = loggedData[7] as any;
-    expect(event.type).to.eql('hook end');
+    expect(event.data.type).to.eql('hook end');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"before each" hook');
@@ -156,7 +156,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('test end', () => {
     const event = loggedData[8] as any;
-    expect(event.type).to.eql('pass');
+    expect(event.data.type).to.eql('pass');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('passing test');
@@ -167,7 +167,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('after each', () => {
     const event = loggedData[9] as any;
-    expect(event.type).to.eql('hook');
+    expect(event.data.type).to.eql('hook');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"after each" hook');
@@ -177,7 +177,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('after each end', () => {
     const event = loggedData[10] as any;
-    expect(event.type).to.eql('hook end');
+    expect(event.data.type).to.eql('hook end');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"after each" hook');
@@ -187,7 +187,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('after all', () => {
     const event = loggedData[11] as any;
-    expect(event.type).to.eql('hook');
+    expect(event.data.type).to.eql('hook');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"after all" hook');
@@ -197,7 +197,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('after all end', () => {
     const event = loggedData[12] as any;
-    expect(event.type).to.eql('hook end');
+    expect(event.data.type).to.eql('hook end');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('"after all" hook');
@@ -207,7 +207,7 @@ describe('ldjson reporter - single passing test', () => {
 
   it('base suite end', () => {
     const event = loggedData[13] as any;
-    expect(event.type).to.eql('suite end');
+    expect(event.data.type).to.eql('suite end');
     expect(event.data.root).to.eql(false);
     expect(event.data.file).to.eql(path.join(RESOURCES_DIR, 'examples/single-passing.js'));
     expect(event.data.title).to.eql('passing suite');
@@ -217,21 +217,21 @@ describe('ldjson reporter - single passing test', () => {
 
   it('root suite end', () => {
     const event = loggedData[14] as any;
-    expect(event.type).to.eql('suite end');
+    expect(event.data.type).to.eql('suite end');
     expect(event.data.root).to.eql(true);
   });
 
   it('end event', () => {
     const event = last(loggedData) as any;
 
-    expect(event.type).to.eql('end');
+    expect(event.data.type).to.eql('end');
 
     expect(isInteger(event.elapsedMs)).to.eql(true);
     expect(isInteger(event.stats.duration)).to.eql(true);
     expect(event.elapsedMs).to.closeTo(event.stats.duration, 2);
     expect(omit(event, ['elapsedMs', 'stats.duration'])).to.eql({
-      type: 'end',
       data: {
+        type: 'end',
         duration: null,
         error: null,
         file: null,
