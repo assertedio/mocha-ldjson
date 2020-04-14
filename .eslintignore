@@ -5,3 +5,6 @@ coverage/**
 scratch.ts
 dist/
 src/commands/templates/*
+tests/resources/*
+mochawesome-report/*
+reports/*

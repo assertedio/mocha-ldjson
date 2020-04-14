@@ -1,9 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const assert = require('assert');
+const { expect } = require('chai');
 
 describe('suite 1', function() {
   it('test pass', () => null);
-  it('test fail', () => assert.ok(null));
+  it('test fail', () => {
+    expect({ foo: 'bar' }).to.eql({ foo: 'baz' });
+  });
   it('skipped test', () => null);
   describe('nested describe', () => {
     it('nested test pass', () => null);
