@@ -1,4 +1,3 @@
-import { TEST_EVENT_TYPES, TEST_RESULT_STATUS, TestData, TestDataInterface, TestEvent, TestStatsInterface } from '@asserted/models';
 import { boolean } from 'boolean';
 import cuid from 'cuid';
 import debug from 'debug';
@@ -11,6 +10,7 @@ import path from 'path';
 import stripAnsi from 'strip-ansi';
 
 import { name } from '../package.json';
+import { TEST_EVENT_TYPES, TEST_RESULT_STATUS, TestDataInterface, TestEventInterface, TestStatsInterface } from './testEvent';
 import { getStats, processError } from './utils';
 
 import Base = Mocha.reporters.Base;
@@ -155,7 +155,7 @@ export class LdJsonReporter extends Base {
   static processEvent(type: TEST_EVENT_TYPES, eventObject: any = {} as any, err = null): TestDataInterface {
     const error = err || eventObject.err;
 
-    return new TestData({
+    return {
       id: (eventObject as any).id || null,
       type,
       file: eventObject.file || null,
@@ -167,7 +167,7 @@ export class LdJsonReporter extends Base {
       error: error ? processError(error) : null,
       root: eventObject.root || false,
       timedOut: eventObject.timedOut || false,
-    });
+    };
   }
 
   /**
@@ -210,11 +210,11 @@ export class LdJsonReporter extends Base {
   /**
    * Append to file (mock for testing)
    * @param {string} outputPath
-   * @param {{}} content
+   * @param {TestEventInterface} testEvent
    * @returns {void}
    */
-  static appendToFile(outputPath: string, content: Record<string, any>): void {
-    fs.appendFileSync(outputPath, `${JSON.stringify(content)}\n`, { encoding: 'utf8' });
+  static appendToFile(outputPath: string, testEvent: TestEventInterface): void {
+    fs.appendFileSync(outputPath, `${JSON.stringify(testEvent)}\n`, { encoding: 'utf8' });
   }
 
   /**
@@ -234,7 +234,7 @@ export class LdJsonReporter extends Base {
       data.error.stack = null;
     }
 
-    LdJsonReporter.appendToFile(this.outputPath, new TestEvent({ data, timestamp, elapsedMs, stats }));
+    LdJsonReporter.appendToFile(this.outputPath, { data, timestamp, elapsedMs, stats });
 
     if (data?.error?.code === CONSTANTS.TIMEOUT_CODE) {
       throw new Err('Routine timed out', CONSTANTS.TIMEOUT_CODE);

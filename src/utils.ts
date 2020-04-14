@@ -1,9 +1,10 @@
-import { TestError, TestErrorInterface, TestStatsInterface } from '@asserted/models';
 import { createPatch } from 'diff';
 import { isNil, isString } from 'lodash';
 import Mocha from 'mocha';
 import mochaUtils from 'mocha/lib/utils';
 import stripAnsi from 'strip-ansi';
+
+import { TestErrorInterface, TestStatsInterface } from './testEvent';
 
 import Stats = Mocha.Stats;
 
@@ -70,10 +71,10 @@ export const processError = (error): TestErrorInterface => {
     errMessage = stack.replace(/\n.*/g, '');
   }
 
-  return new TestError({
+  return {
     message: errMessage,
     stack: stack && stripAnsi(stack),
     diff: errDiff,
     code,
-  });
+  };
 };
