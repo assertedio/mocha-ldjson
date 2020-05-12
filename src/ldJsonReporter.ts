@@ -72,12 +72,12 @@ export class LdJsonReporter extends Base {
     }: { outputPath: string; append: boolean; overallTimeoutMs: string; exitOnTimeout: boolean } = options?.reporterOptions || {};
 
     if (overallTimeoutMs) {
-      this.overallTimeoutMs = parseInt(overallTimeoutMs, 10);
+      this.overallTimeoutMs = Number.parseInt(overallTimeoutMs, 10);
       log(`Setting timeout for: ${overallTimeoutMs} ms`);
       this.overallTimeout = setTimeout(() => {
         console.error('Overall timeout met. Throwing exception.');
         throw new Err('Routine timed out', CONSTANTS.TIMEOUT_CODE);
-      }, parseInt(overallTimeoutMs, 10));
+      }, Number.parseInt(overallTimeoutMs, 10));
     }
 
     this.outputPath = outputPath || DEFAULT_PATH;
@@ -96,6 +96,7 @@ export class LdJsonReporter extends Base {
 
   /**
    * Trap uncaught exceptions and rejectsions
+   *
    * @returns {void}
    */
   static exitOnTimeout(): void {
@@ -110,6 +111,7 @@ export class LdJsonReporter extends Base {
 
   /**
    * Ensure output file exists
+   *
    * @param {string} outputPath
    * @param {boolean} append
    * @returns {void}
@@ -127,6 +129,7 @@ export class LdJsonReporter extends Base {
 
   /**
    * Get test result
+   *
    * @param {any} test
    * @returns {TEST_RESULT_STATUS | null}
    */
@@ -147,6 +150,7 @@ export class LdJsonReporter extends Base {
 
   /**
    * Process event into test data object
+   *
    * @param {TEST_EVENT_TYPES} type
    * @param {Test | Hook | Suite} eventObject
    * @param {{}} err
@@ -172,6 +176,7 @@ export class LdJsonReporter extends Base {
 
   /**
    * Prepare runner by attaching listeners
+   *
    * @param {Runner} runner
    * @returns {void}
    */
@@ -209,6 +214,7 @@ export class LdJsonReporter extends Base {
 
   /**
    * Append to file (mock for testing)
+   *
    * @param {string} outputPath
    * @param {TestEventInterface} testEvent
    * @returns {void}
@@ -219,17 +225,18 @@ export class LdJsonReporter extends Base {
 
   /**
    * Append event to output path
+   *
    * @param {{}} data
    * @param {TestStatsInterface} stats
    * @param {Date} [timestamp]
-   * @returns {Promise<void>}
+   * @returns {void}
    */
   writeEvent(data: TestDataInterface, stats: TestStatsInterface, timestamp = DateTime.utc().toJSDate()): void {
     this.startTime = this.startTime || timestamp.valueOf();
     const elapsedMs = timestamp.valueOf() - (this.startTime as number);
 
     if (data?.error?.code === CONSTANTS.TIMEOUT_CODE) {
-      data.title = `Routine timeout, exceeded: ${this.overallTimeoutMs} ms`;
+      data.title = `Routine timeout. Exceeded ${this.overallTimeoutMs} ms`;
       data.fullTitle = data.title;
       data.error.stack = null;
     }
