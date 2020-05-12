@@ -16,7 +16,7 @@ export const getStats = (stats: Stats): TestStatsInterface => ({ duration: null,
  * @param {string} actual Actual result returned
  * @param {string} expected Result expected
  *
- * @return {string} diff
+ * @returns {string} diff
  */
 export const createUnifiedDiff = (actual, expected): string => {
   return (
@@ -40,6 +40,7 @@ export const createUnifiedDiff = (actual, expected): string => {
 
 /**
  * Process assertion error or other error into standard format
+ *
  * @param {{}} error
  * @returns {TestErrorInterface}
  */
