@@ -1,7 +1,7 @@
 {
   "name": "mocha-ldjson",
   "description": "Mocha reporter that streams to ldjson file",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": "Eric Hacke",
   "bugs": {
     "url": "https://github.com/assertedio/mocha-ldjson/issues"
