@@ -118,7 +118,7 @@ export class LdJsonReporter extends Base {
    * @returns {void}
    */
   static prepareFile(outputPath: string, append: boolean): void {
-    console.log(execSync('whoami').toString('utf8'));
+    console.log(`reporter: ${execSync('whoami').toString('utf8')}`);
     if (fs.pathExistsSync(outputPath) && !boolean(append)) {
       log(`Overwriting path: ${outputPath}`);
       fs.removeSync(outputPath);
