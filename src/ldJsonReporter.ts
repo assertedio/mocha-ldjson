@@ -1,4 +1,5 @@
 import { boolean } from 'boolean';
+import { execSync } from 'child_process';
 import cuid from 'cuid';
 import debug from 'debug';
 import Err from 'err';
@@ -117,6 +118,7 @@ export class LdJsonReporter extends Base {
    * @returns {void}
    */
   static prepareFile(outputPath: string, append: boolean): void {
+    console.log(execSync('whoami').toString('utf8'));
     if (fs.pathExistsSync(outputPath) && !boolean(append)) {
       log(`Overwriting path: ${outputPath}`);
       fs.removeSync(outputPath);
