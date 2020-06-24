@@ -9,8 +9,11 @@ import Mocha from 'mocha';
 import path from 'path';
 import stripAnsi from 'strip-ansi';
 
-import { name } from '../package.json';
+// eslint-disable-next-line import/order
 import { TEST_EVENT_TYPES, TEST_RESULT_STATUS, TestDataInterface, TestEventInterface, TestStatsInterface } from './testEvent';
+// eslint-disable-next-line import/order
+import { name } from '../package.json';
+// eslint-disable-next-line import/order
 import { getStats, processError } from './utils';
 
 import Base = Mocha.reporters.Base;

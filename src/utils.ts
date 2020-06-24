@@ -6,6 +6,7 @@ import stripAnsi from 'strip-ansi';
 
 import { TestErrorInterface, TestStatsInterface } from './testEvent';
 
+// eslint-disable-next-line import/order
 import Stats = Mocha.Stats;
 
 export const getStats = (stats: Stats): TestStatsInterface => ({ duration: null, ...stats });
