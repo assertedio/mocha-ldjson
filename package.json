@@ -107,7 +107,7 @@
     "url": "git+https://github.com/assertedio/mocha-ldjson.git"
   },
   "scripts": {
-    "beta": "npm version prerelease && npm publish",
+    "beta": "npm version prerelease && npm publish --tag beta",
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json && sed -i 's/\"files\":/\"_files\":/' dist/package.json",
     "commit": "git-cz",
     "example": "npm run build && mocha tests/resources/examples/simple.js --bail=false --reporter dist/src/index.js; echo \"Done\"",
